@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import Navbar from "./components/NavBar";
 import TransferForm from "./components/TransferForm";
 import contractABI from "./contractFiles/contractABI.json";
-import contractBytecode from "./contractFiles/contractBytecode";
+// import contractBytecode from "./contractFiles/contractBytecode";
 
 const App = () => {
   //const [provider, setProvider] = useState(null);
@@ -52,23 +52,22 @@ const App = () => {
 
   const transferTokens = async (toAddress, token) => {
     try {
-      // Get the current gas price from the provider
       const gasPrice = await contract.provider.getGasPrice();
 
-      // Increase the gas price by a certain factor (e.g., 1.5 for a 50% increase)
       const increasedGasPrice = gasPrice
         .mul(ethers.BigNumber.from("15"))
         .div(ethers.BigNumber.from("10"));
 
-      // Send the transaction with the increased gas price
       const transaction = await contract.TransferToken(toAddress, token, {
         gasPrice: increasedGasPrice,
       });
 
       await transaction.wait();
       console.log(`${token} tokens successfully transferred to ${toAddress}`);
+      alert("Transaction successful!");
 
       const balance = await contract.balanceOf(connectedAccount);
+      await balance.wait();
       console.log(`Token balance in MetaMask: ${balance.toString()}`);
     } catch (err) {
       console.log("Error transferring tokens:", err);
